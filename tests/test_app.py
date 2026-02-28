@@ -84,7 +84,7 @@ def test_chat_completions_unknown_model(client):
 
 
 def test_chat_completions_success(client):
-    with patch("server.api.chat.get_provider") as mock_gp:
+    with patch("server.api.handler.get_provider") as mock_gp:
         provider = AsyncMock()
         provider.chat_completions = AsyncMock(return_value=_CHAT_RESPONSE)
         mock_gp.return_value = provider
@@ -97,7 +97,7 @@ def test_chat_completions_success(client):
 
 
 def test_chat_completions_provider_error(client):
-    with patch("server.api.chat.get_provider") as mock_gp:
+    with patch("server.api.handler.get_provider") as mock_gp:
         provider = AsyncMock()
         provider.chat_completions = AsyncMock(side_effect=Exception("upstream down"))
         mock_gp.return_value = provider
@@ -121,7 +121,7 @@ _COMPLETION_RESPONSE: dict[str, Any] = {
 
 
 def test_completions_success(client):
-    with patch("server.api.completions.get_provider") as mock_gp:
+    with patch("server.api.handler.get_provider") as mock_gp:
         provider = AsyncMock()
         provider.completions = AsyncMock(return_value=_COMPLETION_RESPONSE)
         mock_gp.return_value = provider
@@ -152,7 +152,7 @@ def test_rate_limit_enforced(tmp_path):
     app.dependency_overrides[get_rate_limiter] = lambda: limiter
     try:
         with TestClient(app) as c:
-            with patch("server.api.chat.get_provider") as mock_gp:
+            with patch("server.api.handler.get_provider") as mock_gp:
                 provider = AsyncMock()
                 provider.chat_completions = AsyncMock(return_value=_CHAT_RESPONSE)
                 mock_gp.return_value = provider

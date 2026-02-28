@@ -2,10 +2,9 @@
 from __future__ import annotations
 
 from server.config.models import ModelConfig
-
-from .base import BaseProvider
-from .ollama import OllamaProvider
-from .openai import OpenAIProvider
+from server.providers.base import BaseProvider
+from server.providers.ollama import OllamaProvider
+from server.providers.openai import OpenAIProvider
 
 
 def get_provider(cfg: ModelConfig) -> BaseProvider:
