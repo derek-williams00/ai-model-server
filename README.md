@@ -8,7 +8,7 @@ simple YAML configuration file.
 
 ## Features
 
-- **OpenAI-compatible API** – drop-in replacement for existing tools
+- **OpenAI-compatible API** – drop-in replacement for existing LLM providers
   - `POST /v1/chat/completions`
   - `POST /v1/completions`
   - `GET  /v1/models`
