@@ -1,0 +1,15 @@
+models:
+  local-small:
+    provider: ollama
+    model: llama3
+
+  cloud-large:
+    provider: openai
+    model: gpt-4
+    rate_limits:
+      daily_token_limit: 50000
+      requests_per_minute: 20
+
+log_level: INFO
+host: "0.0.0.0"
+port: 8000
