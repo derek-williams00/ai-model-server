@@ -1,11 +1,11 @@
 models:
   local-small:
     provider: ollama
-    model: phi4:latest
+    model: llama3
 
   cloud-large:
     provider: openai
-    model: gpt-5.2-2025-12-11
+    model: gpt-4
     rate_limits:
       daily_token_limit: 50000
       requests_per_minute: 20

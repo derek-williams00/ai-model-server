@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 from unittest.mock import AsyncMock, patch
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
@@ -106,6 +107,28 @@ def test_chat_completions_provider_error(client):
             json={"model": "local-small", "messages": []},
         )
     assert resp.status_code == 502
+
+
+def test_chat_completions_model_not_found_in_provider(client):
+    """Test that we properly handle when the model doesn't exist in the provider (e.g., Ollama)."""
+    with patch("server.api.handler.get_provider") as mock_gp:
+        provider = AsyncMock()
+        # Simulate the httpx.HTTPStatusError that Ollama raises for non-existent models
+        mock_request = httpx.Request("POST", "http://localhost:11434/v1/chat/completions")
+        mock_response = httpx.Response(404, request=mock_request, json={"error": {"message": "model 'llama3' not found"}})
+        http_error = httpx.HTTPStatusError(
+            "Client error '404 Not Found' for url 'http://localhost:11434/v1/chat/completions'",
+            request=mock_request,
+            response=mock_response,
+        )
+        provider.chat_completions = AsyncMock(side_effect=http_error)
+        mock_gp.return_value = provider
+        resp = client.post(
+            "/v1/chat/completions",
+            json={"model": "local-small", "messages": []},
+        )
+    assert resp.status_code == 502
+    assert "404 Not Found" in resp.json()["detail"]
 
 
 # ---------------------------------------------------------------------------
